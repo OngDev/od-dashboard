@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div>
-      <BigElement />
+      <GeneralSection />
     </div>
     <a-row type="flex">
       <small-component
@@ -37,7 +37,11 @@
 </template>
 
 <script lang="ts">
-export default {}
+import Vue from 'vue'
+import GeneralSection from '~/components/GeneralSection.vue'
+export default Vue.extend({
+  components: { GeneralSection },
+})
 </script>
 
 <style>
@@ -48,5 +52,6 @@ export default {}
   justify-content: center;
   align-items: center;
   text-align: center;
+  background-color: #20222f;
 }
 </style>
