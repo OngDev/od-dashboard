@@ -7,7 +7,7 @@
     "build": "nuxt-ts build",
     "start": "nuxt-ts start",
     "generate": "nuxt-ts generate",
-    "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
+    "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore . --fix",
     "lint:style": "stylelint \"**/*.{vue,css}\" --ignore-path .gitignore",
     "lint": "yarn lint:js && yarn lint:style",
     "test": "jest"
@@ -18,14 +18,15 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged"
     }
   },
   "dependencies": {
     "@nuxt/typescript-runtime": "^2.0.1",
     "@nuxtjs/axios": "^5.12.5",
-    "ant-design-vue": "^1.7.2",
+    "ant-design-vue": "^1.7.4",
+    "antd": "^4.14.0",
+    "bootstrap": "^5.0.0-beta2",
     "core-js": "^3.8.3",
     "nuxt": "^2.14.12"
   },
