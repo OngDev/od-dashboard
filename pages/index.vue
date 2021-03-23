@@ -1,34 +1,40 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">od-dashboard</h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
+    <a-row type="flex">
+      <small-component
+        class="listCard"
+        title="Github"
+        count="30,000"
+        percent="120"
+        icon="github"
+      />
+      <small-component
+        class="listCard"
+        title="Youtube"
+        count="40,000"
+        percent="80"
+        icon="youtube"
+      />
+      <small-component
+        class="listCard"
+        title="Linked"
+        count="130,000"
+        percent="50"
+        icon="facebook"
+      />
+      <small-component
+        class="listCard"
+        title="Youtube"
+        count="10,000"
+        percent="80"
+        icon="youtube"
+      />
+    </a-row>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-
-export default Vue.extend({})
+export default {}
 </script>
 
 <style>
@@ -61,5 +67,8 @@ export default Vue.extend({})
 
 .links {
   padding-top: 15px;
+}
+.listCard {
+  padding-right: 20px;
 }
 </style>
