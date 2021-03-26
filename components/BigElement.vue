@@ -6,18 +6,18 @@
   >
     <div class="m-3">
       <a-row justify="center" type="flex">
-        <a-col :span="6" class="mr-5">
+        <a-col :span="12" class="mr-5">
           <a-icon
             :style="{ fontSize: '25px', color: '#e71b2b' }"
             :type="data.icon"
           />
         </a-col>
-        <a-col :span="6" class="text-white-50">{{ data.title }}</a-col>
+        <!-- <a-col :span="6" class="text-white-50">{{ data.title }}</a-col> -->
       </a-row>
     </div>
     <div>
       <h1 class="text-white fw-bolder" style="font-size: 60px">
-        {{ data.subscriberCount }}
+        {{ countSubcriber }}
       </h1>
       <p class="text-white-75 lh-base fw-light">FOLLOWERS</p>
       <p class="text-warning">- {{ data.percent }} Today</p>
@@ -33,12 +33,16 @@ export default {
       default: () => {
         return {
           icon: 'youtube',
-          title: '@ntdo',
+          title: '',
           subscriberCount: 1000,
           percent: 20,
         }
       },
     },
+    countSubcriber: {
+      type: String,
+      default: '0'
+    }
   },
 }
 </script>

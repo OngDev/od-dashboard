@@ -9,36 +9,35 @@
         <h6>Total Followers: 23.000</h6>
       </div>
       <div class="mb-4 d-flex justify-content-between">
-        <BigElement class="m-2" />
-        <BigElement class="m-2" />
-        <BigElement class="m-2" />
-        <BigElement class="m-2" />
+        <BigElement class="m-2" :countSubcriber="youtubeInfo.subscriberCount"/>
+        <!-- <BigElement class="m-2" :countSubcriber="youtubeInfo.subscriberCount"/>
+        <BigElement class="m-2" :countSubcriber="youtubeInfo.subscriberCount"/>
+        <BigElement class="m-2" :countSubcriber="youtubeInfo.subscriberCount"/> -->
       </div>
-      <div class="d-flex justify-content-start">
+      <div class="d-flex justify-content-start mb-4">
         <h2>Overview - Today</h2>
+      </div>
+      <div class="d-flex justify-content-start mb-2">
+        <h2>Youtube</h2>
       </div>
       <a-row class="mb-4 d-flex justify-content-between">
         <small-component
           class="listCard"
-          title="Github"
-          count="30,000"
-          percent="120"
-          icon="github"
-        />
-        <small-component
-          class="listCard"
-          title="Youtube"
-          count="40,000"
-          percent="80"
+          title="Video"
+          :countView="youtubeInfo.videoCount"
+          :video="youtubeInfo.videoCount"
+          :countSubcriber="youtubeInfo.subscriberCount"
           icon="youtube"
         />
         <small-component
           class="listCard"
-          title="Linked"
-          count="130,000"
-          percent="50"
-          icon="facebook"
+          title="View"
+          :countView="youtubeInfo.viewCount"
+          :video="youtubeInfo.videoCount"
+          :countSubcriber="youtubeInfo.subscriberCount"
+          icon="youtube"
         />
+        
       </a-row>
     </a-row>
   </div>
@@ -57,10 +56,14 @@ export default {
     }
   },
   created() {
+    var method = this;
     this.$axios
       .$get('https://od-dashboard-api.herokuapp.com/youtube/statistic')
       .then(function (response) {
         console.log(response);
+        method.youtubeInfo.viewCount =new Intl.NumberFormat().format(response.viewCount);
+        method.youtubeInfo.videoCount = response.videoCount;
+        method.youtubeInfo.subscriberCount = response.subscriberCount;
       }).catch(function(err){
         console.log(err);
       })
