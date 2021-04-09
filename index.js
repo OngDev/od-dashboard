@@ -3,7 +3,8 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { fetchYoutubeStats } from './services.js';
+import logger from 'node-color-log';
+import { fetchYoutubeStats, fetchFacebookStats, getFacebookAccessToken } from './services.js';
 
 dotenv.config();
 
@@ -26,10 +27,19 @@ app.use(express.json());
 app.use(express.static('./public'));
 
 app.get('/stats', async (req, res) => {
-  const stats = await fetchYoutubeStats();
+  const stats = await fetchFacebookStats();
   res.status(200).jsonp(stats);
+});
+
+app.get('/fb_token', async (req, res) => {
+  try {
+    await getFacebookAccessToken(req.query.token);
+    res.status(200).end();
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
 });
 
 const PORT = process.env.PORT || 3333;
 
-app.listen(PORT, console.log(`Server is listening on port ${PORT}`));
+app.listen(PORT, logger.info(`Server is listening on port ${PORT}`));
