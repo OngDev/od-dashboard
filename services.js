@@ -18,18 +18,14 @@ const {
   FACEBOOK_PAGE_ID,
   FACEBOOK_CLIENT_ID,
   FACEBOOK_CLIENT_SECRET,
+  GITHUB_API_URL,
 } = process.env;
-
-// export async function getAllStats(){
-
-// }
 
 let longLivedFacebookToken = '';
 let fbPageToken = '';
 
 export async function fetchYoutubeStats() {
   const ENDPOINT = `${YOUTUBE_API_URL}channels?part=statistics&id=${YOUTUBE_CHANNEL_ID}&key=${YOUTUBE_API_KEY}`;
-  console.log(ENDPOINT);
   try {
     const response = await axios.get(ENDPOINT);
     const channel = response.data.items[0];
@@ -42,19 +38,18 @@ export async function fetchYoutubeStats() {
     } = channel;
     const today = moment().format('LL');
     const youtubeRecord = {
-      viewCount,
-      subscriberCount,
-      videoCount,
+      viewCount: +viewCount,
+      subscriberCount: +subscriberCount,
+      videoCount: +videoCount,
       loggedAt: today,
     };
     let result = await youtube.findOneAndUpdate({ loggedAt: today }, {
       $set: {
-        viewCount,
-        subscriberCount,
-        videoCount,
+        viewCount: +viewCount,
+        subscriberCount: +subscriberCount,
+        videoCount: +videoCount,
       },
     });
-    console.log('here');
     if (!result) {
       result = await youtube.insert(youtubeRecord);
     }
@@ -109,15 +104,90 @@ export async function fetchFacebookStats() {
         impressionCount,
       },
     });
+    logger.debug(result);
     if (!result) {
       result = await facebook.insert(facebookRecord);
     }
-    logger.info(`Saved facebook record with followerCount: ${followerCount} and impressionCount: ${impressionCount}`);
   } catch (error) {
-    logger.error(error.response.data);
+    if (error.response) {
+      logger.error(error.response.data);
+    } else {
+      logger.error(error.message);
+    }
   }
 }
 
-// export async function fetchGithubStats(){
+export async function fetchGithubStats() {
+  try {
+    const USER_ENDPOINT = `${GITHUB_API_URL}users/milonguyen95`;
+    const response = await axios.get(USER_ENDPOINT);
+    const {
+    // eslint-disable-next-line camelcase
+      public_repos,
+      // eslint-disable-next-line camelcase
+      public_gists,
+      followers,
+    } = response.data;
+    const today = moment().format('LL');
+    const githubRecord = {
+      repoCount: public_repos,
+      gistCount: public_gists,
+      followerCount: followers,
+      loggedAt: today,
+    };
+    let result = await github.findOneAndUpdate({ loggedAt: today }, {
+      $set: {
+        repoCount: public_repos,
+        gistCount: public_gists,
+        followerCount: followers,
+      },
+    });
+    logger.debug(result);
+    if (!result) {
+      result = await github.insert(githubRecord);
+    }
+  } catch (error) {
+    logger.error(error.message);
+  }
+}
 
-// }
+export async function fetchAllStats() {
+  await fetchYoutubeStats();
+  await fetchFacebookStats();
+  await fetchGithubStats();
+}
+
+export async function getStats() {
+  const today = moment().format('LL');
+
+  const {
+    viewCount,
+    subscriberCount,
+    videoCount,
+  } = await youtube.findOne({ loggedAt: today });
+  const {
+    followerCount,
+    impressionCount,
+  } = await facebook.findOne({ loggedAt: today });
+  const {
+    repoCount,
+    gistCount,
+    followerCount: githubFollowerCount,
+  } = await github.findOne({ loggedAt: today });
+  return {
+    youtube: {
+      viewCount,
+      subscriberCount,
+      videoCount,
+    },
+    facebook: {
+      followerCount,
+      impressionCount,
+    },
+    github: {
+      repoCount,
+      gistCount,
+      followerCount: githubFollowerCount,
+    },
+  };
+}

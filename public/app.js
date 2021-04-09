@@ -4,21 +4,28 @@ const { createApp } = Vue;
 const App = {
   data() {
     return {
-      name: 'Gregg',
+      youtube: {},
+      facebook: {},
+      github: {},
+      facebookToken: '',
     };
   },
+  async mounted() {
+    await this.updateAccessToken();
+    await this.fetchStats();
+  },
   methods: {
+    async updateAccessToken() {
+      await fetch(`/fb_token?token=${this.facebookToken}`);
+    },
     async fetchStats() {
-      const response = await fetch('/url', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          url: this.url,
-          slug: this.slug || undefined,
-        }),
-      });
+      const response = await fetch('/stats');
+
+      const result = await response.json();
+      const { youtube, facebook, github } = result;
+      this.youtube = youtube;
+      this.facebook = facebook;
+      this.github = github;
     },
   },
 };

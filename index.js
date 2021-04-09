@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import logger from 'node-color-log';
-import { fetchYoutubeStats, fetchFacebookStats, getFacebookAccessToken } from './services.js';
+import { getStats, getFacebookAccessToken, fetchAllStats } from './services.js';
 
 dotenv.config();
 
@@ -27,8 +27,13 @@ app.use(express.json());
 app.use(express.static('./public'));
 
 app.get('/stats', async (req, res) => {
-  const stats = await fetchFacebookStats();
+  const stats = await getStats();
   res.status(200).jsonp(stats);
+});
+
+app.get('/fetch-stats', async (req, res) => {
+  await fetchAllStats();
+  res.status(200).end();
 });
 
 app.get('/fb_token', async (req, res) => {
