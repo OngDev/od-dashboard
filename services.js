@@ -36,6 +36,8 @@ const transporter = nodemailer.createTransport({
 let longLivedFacebookToken = '';
 let fbPageToken = '';
 
+let statCache;
+
 function sendNotificationEmail() {
   const mailOptions = {
     from: EMAIL_USERNAME,
@@ -186,6 +188,13 @@ export async function fetchAllStats() {
 }
 
 export async function getTotalStats() {
+  if (statCache) {
+    const { cacheTime, data } = statCache;
+    const durationUntilNow = moment.duration(cacheTime.diff(moment())).asSeconds();
+    if (durationUntilNow < 30) {
+      return data;
+    }
+  }
   const today = moment().format('LL');
   const youtubeStat = await youtube.findOne({ loggedAt: today });
   const facebookStat = await facebook.findOne({ loggedAt: today });
@@ -226,5 +235,9 @@ export async function getTotalStats() {
       followerCount: githubFollowerCount,
     };
   }
+  statCache = {
+    cacheTime: moment(),
+    data: stats,
+  };
   return stats;
 }
