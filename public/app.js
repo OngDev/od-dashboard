@@ -2,9 +2,7 @@
 const { createApp } = Vue;
 
 const App = {
-  template: `<header>
-  <img src="logo.png" alt="Ong Dev logo" id="logo">
-</header><div class="intro">Hế lô hế lô, <span class="ongdev-text">Ông Dev đêi!</span></div>
+  template: `<div class="intro">Hế lô hế lô, <span class="ongdev-text">Ông Dev đêi!</span></div>
   <div class="tagline">Ghét code | Nghiện bia | Đừng như <span class="ongdev-text">Ông Dev</span></div>
   <br/>
   <div id="social-text" v-if="youtube">---Youtube---</div>
