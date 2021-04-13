@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Ông Dev Dashboard" />
+    <meta property="og:description" content="Dashboard hiển thị các thông tin cơ bản của Ông Dev" />
+    <meta property="og:image" content="fb_share_thumb.png" />
+    <link rel="icon" href="logo-sm.png">
     <link href="https://fonts.googleapis.com/css?family=Reem+Kufi|Roboto:300" rel="stylesheet">
 	<link href="https://use.fontawesome.com/releases/v5.12.0/css/all.css" rel="stylesheet">
     <title>Hế lô hế lô, Ông Dev đêi!</title>
@@ -19,6 +23,20 @@
 }
         html, body, #app {
     height: 100%;
+}
+header {
+    margin-top: 2rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+#logo {
+    max-width: 50%;
+    image-rendering: -moz-crisp-edges;
 }
 #app{
     display: flex;
@@ -57,10 +75,29 @@ p {
     margin: 0 0.3em;
     font-size: 1.5em;
 }
+
+@media screen and (max-width: 768px) {
+    #app > .intro {
+	font-size: 3.75em;
+    font-size: 8vw;
+    }
+    #app > .tagline {
+    font-size: 1.75em;
+    font-size: 4vw;
+    }
+    p {
+    font-size: 1.25em;
+    font-size: 3vw;
+    }
+    #icons-social > a {
+    font-size: 1.5em;
+    font-size: 3.5vw;
+}
+}
     </style>
 </head>
 
-<body>
+<body> 
     <div id="app"></div>
     <script src="http://unpkg.com/vue@next"></script>
     <script src="./app.js"></script>

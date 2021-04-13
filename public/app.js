@@ -2,18 +2,20 @@
 const { createApp } = Vue;
 
 const App = {
-  template: `<div class="intro">Hế lô hế lô, <span class="ongdev-text">Ông Dev đêi!</span></div>
+  template: `<header>
+  <img src="logo.png" alt="Ong Dev logo" id="logo">
+</header><div class="intro">Hế lô hế lô, <span class="ongdev-text">Ông Dev đêi!</span></div>
   <div class="tagline">Ghét code | Nghiện bia | Đừng như <span class="ongdev-text">Ông Dev</span></div>
   <br/>
-  <div id="social-text">---Youtube---</div>
-  <p>Người theo dõi: <span class="ongdev-text">{{youtube.subscriberCount}}</span> | Lượt view: <span class="ongdev-text">{{youtube.viewCount}}</span> | Số video: <span class="ongdev-text">{{youtube.videoCount}}</span></p>
-  <div id="social-text">---Facebook---</div>
-  <p>Người theo dõi: <span class="ongdev-text">{{facebook.followerCount}}</span></p>
-  <div id="social-text">---Github---</div>
-  <p>Người theo dõi: <span class="ongdev-text">{{github.followerCount}}</span> | Số Repo: <span class="ongdev-text">{{github.repoCount}}</span> | Số Gists: <span class="ongdev-text">{{github.gistCount}}</span></p>
-  <br/>
+  <div id="social-text" v-if="youtube">---Youtube---</div>
+  <p v-if="youtube">Người theo dõi: <span class="ongdev-text">{{youtube.subscriberCount}}</span> | Lượt view: <span class="ongdev-text">{{youtube.viewCount}}</span> | Số video: <span class="ongdev-text">{{youtube.videoCount}}</span></p>
+  <div id="social-text" v-if="facebook">---Facebook---</div>
+  <p v-if="facebook">Người theo dõi: <span class="ongdev-text">{{facebook.followerCount}}</span></p>
+  <div id="social-text" v-if="github">---Github---</div>
+  <p v-if="github">Người theo dõi: <span class="ongdev-text">{{github.followerCount}}</span> | Số Repo: <span class="ongdev-text">{{github.repoCount}}</span> | Số Gists: <span class="ongdev-text">{{github.gistCount}}</span></p>
+  <br v-if="youtube && facebook && github"/>
   <div id="social-text">---Các trang thuộc Ông Dev---</div>
-  <br/>
+  <br v-if="youtube && facebook && github"/>
   <p>Trang request: <a class="ongdev-text" href="https://request.ongdev.com">https://request.ongdev.com</a></p>
 
   <p>Url shortener: <a class="ongdev-text" href="https://ongdev.link">https://ongdev.link</a></p>
@@ -28,9 +30,9 @@ const App = {
 </div>`,
   data() {
     return {
-      youtube: {},
-      facebook: {},
-      github: {},
+      youtube: null,
+      facebook: null,
+      github: null,
       facebookToken: '',
     };
   },
