@@ -4,9 +4,16 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import logger from 'node-color-log';
-import { getStats, getFacebookAccessToken, fetchAllStats } from './services.js';
+import cron from 'cron';
+import { getTotalStats, getFacebookAccessToken, fetchAllStats } from './services.js';
 
 dotenv.config();
+const { CronJob } = cron;
+const job = new CronJob('*/10 * * * *', async () => {
+  logger.info('Fetching all stats');
+  await fetchAllStats();
+});
+job.start();
 
 const app = express();
 
@@ -17,7 +24,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ['*'],
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'http://unpkg.com/vue@next'],
-      styleSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com/css', 'https://use.fontawesome.com/releases/v5.12.0/css/all.css'],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],
     },
@@ -27,7 +34,7 @@ app.use(express.json());
 app.use(express.static('./public'));
 
 app.get('/stats', async (req, res) => {
-  const stats = await getStats();
+  const stats = await getTotalStats();
   res.status(200).jsonp(stats);
 });
 
@@ -39,6 +46,7 @@ app.get('/fetch-stats', async (req, res) => {
 app.get('/fb_token', async (req, res) => {
   try {
     await getFacebookAccessToken(req.query.token);
+    await fetchAllStats();
     res.status(200).end();
   } catch (error) {
     res.status(400).send(error.message);

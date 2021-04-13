@@ -2,6 +2,7 @@ import axios from 'axios';
 import dotenv from 'dotenv';
 import moment from 'moment';
 import logger from 'node-color-log';
+import nodemailer from 'nodemailer';
 import db from './db.js';
 
 dotenv.config();
@@ -19,10 +20,38 @@ const {
   FACEBOOK_CLIENT_ID,
   FACEBOOK_CLIENT_SECRET,
   GITHUB_API_URL,
+  EMAIL_USERNAME,
+  EMAIL_PASSWORD,
+  ONGDEV_EMAIL,
 } = process.env;
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: EMAIL_USERNAME,
+    pass: EMAIL_PASSWORD,
+  },
+});
 
 let longLivedFacebookToken = '';
 let fbPageToken = '';
+
+function sendNotificationEmail() {
+  const mailOptions = {
+    from: EMAIL_USERNAME,
+    to: ONGDEV_EMAIL,
+    subject: 'Update facebook token',
+    text: 'Nothing',
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      logger.error(error);
+    } else {
+      logger.info(`Email sent: ${info.response}`);
+    }
+  });
+}
 
 export async function fetchYoutubeStats() {
   const ENDPOINT = `${YOUTUBE_API_URL}channels?part=statistics&id=${YOUTUBE_CHANNEL_ID}&key=${YOUTUBE_API_KEY}`;
@@ -104,12 +133,12 @@ export async function fetchFacebookStats() {
         impressionCount,
       },
     });
-    logger.debug(result);
     if (!result) {
       result = await facebook.insert(facebookRecord);
     }
   } catch (error) {
     if (error.response) {
+      sendNotificationEmail();
       logger.error(error.response.data);
     } else {
       logger.error(error.message);
@@ -142,7 +171,6 @@ export async function fetchGithubStats() {
         followerCount: followers,
       },
     });
-    logger.debug(result);
     if (!result) {
       result = await github.insert(githubRecord);
     }
@@ -157,37 +185,46 @@ export async function fetchAllStats() {
   await fetchGithubStats();
 }
 
-export async function getStats() {
+export async function getTotalStats() {
   const today = moment().format('LL');
-
-  const {
-    viewCount,
-    subscriberCount,
-    videoCount,
-  } = await youtube.findOne({ loggedAt: today });
-  const {
-    followerCount,
-    impressionCount,
-  } = await facebook.findOne({ loggedAt: today });
-  const {
-    repoCount,
-    gistCount,
-    followerCount: githubFollowerCount,
-  } = await github.findOne({ loggedAt: today });
-  return {
-    youtube: {
+  const youtubeStat = await youtube.findOne({ loggedAt: today });
+  const facebookStat = await facebook.findOne({ loggedAt: today });
+  const githubStat = await github.findOne({ loggedAt: today });
+  const stats = {};
+  if (youtubeStat) {
+    const {
       viewCount,
       subscriberCount,
       videoCount,
-    },
-    facebook: {
+    } = youtubeStat;
+    stats.youtube = {
+      viewCount,
+      subscriberCount,
+      videoCount,
+    };
+  }
+
+  if (facebookStat) {
+    const {
       followerCount,
-      impressionCount,
-    },
-    github: {
+    } = facebookStat;
+
+    stats.facebook = {
+      followerCount,
+    };
+  }
+
+  if (githubStat) {
+    const {
       repoCount,
       gistCount,
       followerCount: githubFollowerCount,
-    },
-  };
+    } = githubStat;
+    stats.github = {
+      repoCount,
+      gistCount,
+      followerCount: githubFollowerCount,
+    };
+  }
+  return stats;
 }
