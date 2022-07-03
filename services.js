@@ -187,6 +187,7 @@ export async function fetchAllStats() {
   await fetchYoutubeStats();
   await fetchFacebookStats();
   await fetchGithubStats();
+  statCache = undefined;
 }
 
 export async function getTotalStats() {
