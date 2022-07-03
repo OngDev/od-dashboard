@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import logger from 'node-color-log';
 import cron from 'cron';
-import { getTotalStats, getFacebookAccessToken, fetchAllStats } from './services.js';
+import { getTotalStats, fetchAllStats } from './services.js';
 
 dotenv.config();
 const { CronJob } = cron;
@@ -36,21 +36,6 @@ app.use(express.static('./public'));
 app.get('/stats', async (req, res) => {
   const stats = await getTotalStats();
   res.status(200).jsonp(stats);
-});
-
-app.get('/fetch-stats', async (req, res) => {
-  await fetchAllStats();
-  res.status(200).end();
-});
-
-app.get('/fb_token', async (req, res) => {
-  try {
-    await getFacebookAccessToken(req.query.token);
-    await fetchAllStats();
-    res.status(200).end();
-  } catch (error) {
-    res.status(400).send(error.message);
-  }
 });
 
 const PORT = process.env.PORT || 3333;

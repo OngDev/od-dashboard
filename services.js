@@ -74,6 +74,7 @@ export async function fetchYoutubeStats() {
       videoCount: +videoCount,
       loggedAt: today,
     };
+
     let result = await youtube.findOneAndUpdate({ loggedAt: today }, {
       $set: {
         viewCount: +viewCount,
@@ -81,12 +82,13 @@ export async function fetchYoutubeStats() {
         videoCount: +videoCount,
       },
     });
+
     if (!result) {
       result = await youtube.insert(youtubeRecord);
     }
     return result;
   } catch (error) {
-    return error.message;
+    logger.error(error.message);
   }
 }
 
