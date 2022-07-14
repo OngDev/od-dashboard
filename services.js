@@ -96,9 +96,8 @@ export async function getFacebookAccessToken(shortLivedToken) {
   try {
     const ENDPOINT = `${FACEBOOK_API_URL}oauth/access_token?grant_type=fb_exchange_token&client_id=${FACEBOOK_CLIENT_ID}&client_secret=${FACEBOOK_CLIENT_SECRET}&fb_exchange_token=${shortLivedToken}`;
     const response = await axios.get(ENDPOINT);
-    logger.info(response.data.access_token);
     longLivedFacebookToken = response.data.access_token;
-    const PAGE_TOKEN_ENDPOINT = `${FACEBOOK_API_URL}${FACEBOOK_PAGE_ID}?fields=access_token&access_token=${shortLivedToken}`;
+    const PAGE_TOKEN_ENDPOINT = `${FACEBOOK_API_URL}${FACEBOOK_PAGE_ID}?fields=access_token&access_token=${longLivedFacebookToken}`;
     const pageTokenResponse = await axios.get(PAGE_TOKEN_ENDPOINT);
     fbPageToken = pageTokenResponse.data.access_token;
   } catch (error) {
