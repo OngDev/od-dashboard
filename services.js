@@ -152,7 +152,7 @@ export async function fetchFacebookStats() {
 
 export async function fetchGithubStats() {
   try {
-    const USER_ENDPOINT = `${GITHUB_API_URL}users/milonguyen95`;
+    const USER_ENDPOINT = `${GITHUB_API_URL}users/duynguyenod`;
     const response = await axios.get(USER_ENDPOINT);
     const {
     // eslint-disable-next-line camelcase
